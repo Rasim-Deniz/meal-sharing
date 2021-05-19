@@ -4,16 +4,16 @@ const knex = require("../database");
 
 router.get("/", async (request, response) => {
     try {
-        const reservations = await knex("reservation");
+        const reservations = await knex("reservations");
         response.send(reservations);
     } catch (error) {
-        throw error
+        response.status(500).json(error);
     }
 });
 
 router.post("/", async (request, response) => {
     try {
-        const reservation = await knex("reservation").insert(request.body);
+        const reservation = await knex("reservations").insert(request.body);
         if (reservation) {
             response.status(201).json({
                 message: "Reservation is successfully added"
@@ -24,7 +24,7 @@ router.post("/", async (request, response) => {
             });
         }
     } catch (error) {
-        throw error;
+        response.status(500).json(error);
     }
 });
 
@@ -37,7 +37,7 @@ router.get("/:id", async (request, response) => {
             });
             return;
         }
-        const reservation = await knex("reservation").where("id", reservationId);
+        const reservation = await knex("reservations").where("id", reservationId);
         if (reservation) {
             response.json(reservation);
         } else {
@@ -46,7 +46,7 @@ router.get("/:id", async (request, response) => {
             });
         }
     } catch (error) {
-        throw error;
+        response.status(500).json(error);
     }
 });
 
@@ -59,7 +59,7 @@ router.put("/:id", async (request, response) => {
             });
             return;
         }
-        const reservation = await knex("reservation").where("id", reservationId).update(request.body);
+        const reservation = await knex("reservations").where("id", reservationId).update(request.body);
         if (reservation) {
             response.status(201).json({
                 message: "Reservation is successfully updated"
@@ -70,7 +70,7 @@ router.put("/:id", async (request, response) => {
             });
         }
     } catch (error) {
-        throw error;
+        response.status(500).json(error);
     }
 });
 
@@ -83,7 +83,7 @@ router.delete("/:id", async (request, response) => {
             });
             return;
         }
-        const reservation = await knex("reservation").where("id", reservationId).del();
+        const reservation = await knex("reservations").where("id", reservationId).del();
         if (reservation) {
             response.status(201).json({
                 message: "Reservation is successfully deleted"
@@ -94,7 +94,7 @@ router.delete("/:id", async (request, response) => {
             });
         }
     } catch (error) {
-        throw error;
+        response.status(500).json(error);
     }
 });
 

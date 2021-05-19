@@ -4,16 +4,16 @@ const knex = require("../database");
 
 router.get("/", async (request, response) => {
     try {
-        const reviews = await knex("review");
+        const reviews = await knex("reviews");
         response.send(reviews);
     } catch (error) {
-        throw error
+        response.status(500).json(error);
     }
 });
 
 router.post("/", async (request, response) => {
     try {
-        const review = await knex("review").insert(request.body);
+        const review = await knex("reviews").insert(request.body);
         if (review) {
             response.status(201).json({
                 message: "Review is successfully added"
@@ -24,7 +24,7 @@ router.post("/", async (request, response) => {
             });
         }
     } catch (error) {
-        throw error;
+        response.status(500).json(error);
     }
 });
 
@@ -37,7 +37,7 @@ router.get("/:id", async (request, response) => {
             });
             return;
         }
-        const review = await knex("review").where("id", reviewId);
+        const review = await knex("reviews").where("id", reviewId);
         if (review) {
             response.json(review);
         } else {
@@ -46,7 +46,7 @@ router.get("/:id", async (request, response) => {
             });
         }
     } catch (error) {
-        throw error;
+        response.status(500).json(error);
     }
 });
 
@@ -59,7 +59,7 @@ router.put("/:id", async (request, response) => {
             });
             return;
         }
-        const review = await knex("review").where("id", reviewId).update(request.body);
+        const review = await knex("reviews").where("id", reviewId).update(request.body);
         if (review) {
             response.status(201).json({
                 message: "Review is successfully updated"
@@ -70,7 +70,7 @@ router.put("/:id", async (request, response) => {
             });
         }
     } catch (error) {
-        throw error;
+        response.status(500).json(error);
     }
 });
 
@@ -83,7 +83,7 @@ router.delete("/:id", async (request, response) => {
             });
             return;
         }
-        const review = await knex("review").where("id", reviewId).del();
+        const review = await knex("reviews").where("id", reviewId).del();
         if (review) {
             response.status(201).json({
                 message: "Review is successfully deleted"
@@ -94,7 +94,7 @@ router.delete("/:id", async (request, response) => {
             });
         }
     } catch (error) {
-        throw error;
+        response.status(500).json(error);
     }
 });
 

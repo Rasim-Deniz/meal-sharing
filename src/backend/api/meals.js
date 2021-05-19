@@ -12,11 +12,9 @@ router.get("/", async (request, response) => {
         });
         return;
       }
-      const meals = await knex("meal").where("price", "<", maxPrice);
+      const meals = await knex("meals").where("price", "<", maxPrice);
       response.json(meals);
-    }
-
-    if ("availableReservations" in request.query) {
+    } else if ("availableReservations" in request.query) {
       const availableReservations = request.query.availableReservations;
 
       function checkBool(bool) {
@@ -26,26 +24,20 @@ router.get("/", async (request, response) => {
           return "<=";
         }
       }
-      const meals = await knex("meal")
-        .select('meal.id', 'meal.title', 'meal.max_reservations', knex.raw('coalesce(reservation.number_of_guests, 0) as reserved'), 'reservation.created_date')
-        .leftJoin('reservation', 'meal.id', 'reservation.meal_id')
-        .having('meal.max_reservations', `${checkBool(availableReservations)}`, knex.raw('reserved'));
+      const meals = await knex("meals")
+        .select('meals.id', 'meals.title', 'meals.max_reservations', knex.raw('coalesce(reservations.number_of_guests, 0) as reserved'), 'reservations.created_date')
+        .leftJoin('reservations', 'meals.id', 'reservations.meal_id')
+        .having('meals.max_reservations', `${checkBool(availableReservations)}`, knex.raw('reserved'));
       response.json(meals);
-    }
-
-    if ("title" in request.query) {
+    } else if ("title" in request.query) {
       const title = request.query.title;
-      const meals = await knex("meal").where("title", "like", "%" + title + "%");
+      const meals = await knex("meals").where("title", "like", "%" + title + "%");
       response.json(meals);
-    }
-
-    if ("createdAfter" in request.query) {
+    } else if ("createdAfter" in request.query) {
       const createdAfter = request.query.createdAfter;
-      const meals = await knex("meal").where("created_date", ">", createdAfter);
+      const meals = await knex("meals").where("created_date", ">", createdAfter);
       response.json(meals);
-    }
-
-    if ("limit" in request.query) {
+    } else if ("limit" in request.query) {
       const limit = parseInt(request.query.limit);
       if (isNaN(limit)) {
         response.status(400).json({
@@ -53,22 +45,24 @@ router.get("/", async (request, response) => {
         })
         return;
       }
-      const meals = await knex("meal").limit(limit);
+      const meals = await knex("meals").limit(limit);
       response.json(meals);
+    } else {
+      const meals = await knex("meals");
+      response.send(meals);
     }
-    const meals = await knex("meal");
-    response.send(meals);
+
   } catch (error) {
-    throw error;
+    response.status(500).json(error);
   }
 });
 
 router.post("/", async (request, response) => {
   try {
-    const meal = await knex("meal").insert(request.body);
-    if (meal) {
+    const meals = await knex("meals").insert(request.body);
+    if (meals) {
       response.status(201).json({
-        message: "Meal is successfully added"
+        message: "meal is successfully added"
       });
     } else {
       response.status(404).json({
@@ -76,7 +70,7 @@ router.post("/", async (request, response) => {
       });
     }
   } catch (error) {
-    throw error;
+    response.status(500).json(error);
   }
 });
 
@@ -89,16 +83,16 @@ router.get("/:id", async (request, response) => {
       });
       return;
     }
-    const meal = await knex("meal").where("id", mealId);
-    if (meal) {
-      response.json(meal);
+    const meals = await knex("meals").where("id", mealId);
+    if (meals) {
+      response.json(meals);
     } else {
       response.status(404).json({
         error: "Meals are not found"
       });
     }
   } catch (error) {
-    throw error;
+    response.status(500).json(error);
   }
 });
 
@@ -111,10 +105,10 @@ router.put("/:id", async (request, response) => {
       });
       return;
     }
-    const meal = await knex("meal").where("id", mealId).update(request.body);
-    if (meal) {
+    const meals = await knex("meals").where("id", mealId).update(request.body);
+    if (meals) {
       response.status(201).json({
-        message: "Meal is successfully updated"
+        message: "meal is successfully updated"
       });
     } else {
       response.status(404).json({
@@ -122,7 +116,7 @@ router.put("/:id", async (request, response) => {
       });
     }
   } catch (error) {
-    throw error;
+    response.status(500).json(error);
   }
 });
 
@@ -135,10 +129,10 @@ router.delete("/:id", async (request, response) => {
       });
       return;
     };
-    const meal = await knex("meal").where("id", mealId).del();
-    if (meal) {
+    const meals = await knex("meals").where("id", mealId).del();
+    if (meals) {
       response.status(201).json({
-        message: "Meal is successfully deleted"
+        message: "meal is successfully deleted"
       });
     } else {
       response.status(404).json({
@@ -146,7 +140,7 @@ router.delete("/:id", async (request, response) => {
       });
     }
   } catch (error) {
-    throw error;
+    response.status(500).json(error);
   }
 });
 
