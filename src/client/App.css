@@ -321,7 +321,7 @@ button {
 }
 
 .nav-links {
-  color: #fff;
+  color: #000;
   display: flex;
   align-items: center;
   text-decoration: none;
@@ -364,7 +364,7 @@ button {
   }
 
   .nav-menu.active {
-    background: #242222;
+    background: #16ffbd;
     left: 0;
     opacity: 1;
     transition: all 0.5s ease;
