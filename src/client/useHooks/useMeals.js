@@ -20,7 +20,7 @@ export function useMeals() {
         setIsLoading(false);
       }
     })();
-  }, [meals]);
+  }, []);
 
   return { meals, setMeals, isLoading, setIsLoading };
 }
