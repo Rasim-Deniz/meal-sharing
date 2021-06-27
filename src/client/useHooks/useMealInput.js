@@ -22,7 +22,7 @@ export function useMealInput(userInput) {
         }
       }
     })();
-  }, [meals]);
+  }, [meals, userInput]);
 
   return { newMeals, isLoading };
 }
