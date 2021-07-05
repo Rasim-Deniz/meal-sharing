@@ -11,8 +11,8 @@ export default function CreateMealForm() {
     today.getMonth() + 1
   }-${today.getDate()}`;
 
-  let handleChange = (e) => {
-    let { name, value } = e.target;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
 
     setMealForm({
       ...mealForm,
@@ -22,7 +22,7 @@ export default function CreateMealForm() {
     });
   };
 
-  let save = (e) => {
+  const save = (e) => {
     setSaveState(true);
     e.preventDefault();
     postNewMeal();

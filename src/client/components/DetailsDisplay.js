@@ -13,10 +13,10 @@ export default function DetailsDisplay() {
   const date = `${today.getFullYear()}-${
     today.getMonth() + 1
   }-${today.getDate()}`;
-  let { id } = useParams();
+  const { id } = useParams();
 
-  let handleChange = (e) => {
-    let { name, value } = e.target;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
 
     setReservationForm({
       ...reservationForm,
@@ -26,7 +26,7 @@ export default function DetailsDisplay() {
     });
   };
 
-  let save = (e) => {
+  const save = (e) => {
     setSaveState(true);
     e.preventDefault();
     postNewReservation();
